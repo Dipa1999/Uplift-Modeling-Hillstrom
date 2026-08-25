@@ -1,0 +1,38 @@
+# Dependencies for uplift-modeling-hillstrom.
+#
+# Every package below is imported somewhere in src/, notebooks/, or
+# app/dashboard.py (verified against %pip install cells and top-of-file
+# imports, not guessed). Grouped by where each is used; the group header is
+# a comment only, not something pip parses.
+#
+# Version policy: minimum-version constraints (>=), not exact pins. This is
+# a single-developer portfolio project, not a deployed service with a
+# reproducibility contract -- exact pins would go stale and fail installs
+# for anyone using a slightly newer Python/OS, while these floors are
+# recent enough to guarantee the specific APIs this project relies on
+# (e.g. sklift's TwoModels/SoloModel, pandas nullable/categorical dtype
+# handling in data_prep.py, plotly's graph_objects API used in
+# evaluation.py). If a fully reproducible environment is ever needed, run
+# `pip freeze > requirements-lock.txt` after installing from this file.
+
+# --- Core data handling (src/data_prep.py, all notebooks) ---
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14.0        # parquet read/write for data/processed/*.parquet
+
+# --- Modeling (src/models.py, notebooks 02-05) ---
+scikit-learn>=1.4
+scikit-uplift>=0.5.1  # sklift: SoloModel, TwoModels, qini_auc_score, fetch_hillstrom
+statsmodels>=0.14      # VIF check in data_prep.py's check_design_matrix_rank
+torch>=2.2              # TARNet implementation in src/models.py
+
+# --- Explainability (src/models.py's compute_xlearner_uplift_shap, 05_heterogeneity_shap.ipynb) ---
+shap>=0.44
+
+# --- Visualization (src/evaluation.py, notebooks, app/dashboard.py) ---
+matplotlib>=3.8
+plotly>=5.18
+
+# --- Dashboard (app/dashboard.py, scripts/build_dashboard_artifacts.py) ---
+streamlit>=1.31
+joblib>=1.3            # persists/loads data/processed/dashboard_artifacts.joblib
